@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Impresoras - Furia Technology">
+    <title>Impresoras - Furia Technology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.6/xlsx.full.min.js"></script> <!-- SheetJS -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to bottom, black, purple, darkblue);
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        header, footer {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        main {
+            padding-top: 4rem;
+            padding-bottom: 4rem;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="bg-white bg-opacity-30 text-white p-4 w-full fixed top-0">
+        <nav class="flex justify-between items-center flex-wrap">
+            <div class="text-xl font-bold">
+                Furia Technology
+            </div>
+            <ul class="flex space-x-4 flex-wrap">
+                <li><a class="hover:underline" href="index.html">Inicio</a></li>
+                <li><a class="hover:underline" href="#">Productos</a></li>
+                <li><a class="hover:underline" href="#">Servicios</a></li>
+                <li><a class="hover:underline" href="#">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="pt-16">
+        <section class="max-w-6xl mx-auto p-6">
+            <h1 class="text-3xl font-bold mb-4">Impresoras</h1>
+            <p class="text-lg mb-6">Aquí encontrarás una selección de impresoras disponibles.</p>
+            <button id="export-button" class="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 mb-6">
+                Exportar a Excel
+            </button>
+            <input type="file" id="import-file" class="mb-6 hidden" accept=".xlsx, .xls">
+            <button id="import-button" class="bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 mb-6">
+                Importar desde Excel
+            </button>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <!-- Tarjeta de producto 1 -->
+                <div class="bg-white p-4 rounded-lg shadow-lg">
+                    <img src="https://placehold.co/300x200" alt="Impresora Ejemplo 1" class="w-full h-48 object-cover mb-4">
+                    <h2 class="text-xl font-semibold" id="product-name-1">Impresora Ejemplo 1</h2>
+                    <p class="text-gray-600" id="product-description-1">Descripción de Impresora Ejemplo 1.</p>
+                    <p class="text-gray-600" id="product-price-1">$199.99</p>
+                    <a href="#" id="buy-button-1" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 text-center inline-block">
+                        Comprar
+                    </a>
+                </div>
+                <!-- Tarjeta de producto 2 -->
+                <div class="bg-white p-4 rounded-lg shadow-lg">
+                    <img src="https://placehold.co/300x200" alt="Impresora Ejemplo 2" class="w-full h-48 object-cover mb-4">
+                    <h2 class="text-xl font-semibold" id="product-name-2">Impresora Ejemplo 2</h2>
+                    <p class="text-gray-600" id="product-description-2">Descripción de Impresora Ejemplo 2.</p>
+                    <p class="text-gray-600" id="product-price-2">$249.99</p>
+                    <a href="#" id="buy-button-2" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 text-center inline-block">
+                        Comprar
+                    </a>
+                </div>
+                <!-- Tarjeta de producto 3 -->
+                <div class="bg-white p-4 rounded-lg shadow-lg">
+                    <img src="https://placehold.co/300x200" alt="Impresora Ejemplo 3" class="w-full h-48 object-cover mb-4">
+                    <h2 class="text-xl font-semibold" id="product-name-3">Impresora Ejemplo 3</h2>
+                    <p class="text-gray-600" id="product-description-3">Descripción de Impresora Ejemplo 3.</p>
+                    <p class="text-gray-600" id="product-price-3">$299.99</p>
+                    <a href="#" id="buy-button-3" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 text-center inline-block">
+                        Comprar
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-white bg-opacity-30 text-white p-4 w-full fixed bottom-0">
+        <div class="flex justify-between items-center">
+            <p class="text-sm">© 2024 Furia Technology. Todos los derechos reservados.</p>
+            <ul class="flex space-x-4">
+                <li><a class="hover:underline" href="#">Política de Privacidad</a></li>
+                <li><a class="hover:underline" href="#">Términos de Servicio</a></li>
+            </ul>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const products = [
+                {
+                    id: '1',
+                    name: document.getElementById('product-name-1').textContent,
+                    description: document.getElementById('product-description-1').textContent,
+                    price: document.getElementById('product-price-1').textContent
+                },
+                {
+                    id: '2',
+                    name: document.getElementById('product-name-2').textContent,
+                    description: document.getElementById('product-description-2').textContent,
+                    price: document.getElementById('product-price-2').textContent
+                },
+                {
+                    id: '3',
+                    name: document.getElementById('product-name-3').textContent,
+                    description: document.getElementById('product-description-3').textContent,
+                    price: document.getElementById('product-price-3').textContent
+                }
+            ];
+
+            // Exportar a Excel
+            document.getElementById('export-button').addEventListener('click', () => {
+                const ws = XLSX.utils.json_to_sheet(products);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Productos");
+                XLSX.writeFile(wb, "productos.xlsx");
+            });
+
+            // Importar desde Excel
+            document.getElementById('import-button').addEventListener('click', () => {
+                document.getElementById('import-file').click();
+            });
+
+            document.getElementById('import-file').addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0];
+                    const sheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+                    // Limpiar productos actuales
+                    for (let i = 1; i <= 3; i++) {
+                        document.getElementById(`product-name-${i}`).textContent = "";
+                        document.getElementById(`product-description-${i}`).textContent = "";
+                        document.getElementById(`product-price-${i}`).textContent = "";
+                    }
+
+                    // Actualizar productos con los datos importados
+                    jsonData.forEach((product, index) => {
+                        if (index < 3) {
+                            document.getElementById(`product-name-${index + 1}`).textContent = product.name || "";
+                            document.getElementById(`product-description-${index + 1}`).textContent = product.description || "";
+                            document.getElementById(`product-price-${index + 1}`).textContent = product.price || "";
+                        }
+                    });
+                };
+                reader.readAsArrayBuffer(file);
+            });
+        });
+    </script>
+</body>
+</html>
